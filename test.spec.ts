@@ -6,10 +6,18 @@ const request = supertest(app)
 test("adds 1 + 2 to equal 3", () => {
   expect(sum(1, 2)).toBe(3)
 })
-
-test("Should print your name", async () => {
-  const response = await request.get('/greeting?name=shay')
+describe('greetings server', () => {
+  test("Should print your name", async () => {
+    const response = await request.get('/greeting?name=shay')
   
-  expect(response.status).toBe(200)
-  expect(response.body.message).toBe('Greetings shay!')
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Greetings shay!')
+  })
+  
+  test("Should print your name, also for max", async () => {
+    const response = await request.get('/greeting?name=max')
+    
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Greetings max!')
+  })
 })
