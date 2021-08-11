@@ -6,14 +6,17 @@ let timeServerUrl: string
 const app = express()
 
 app.get("/greeting", async (req: express.Request, res: express.Response) => {
-  const { data: { time } } = await fetch(timeServerUrl).then((result: any) =>
-    result.json()
-  )
+  const name = req.query.name
+  const {
+    data: { time },
+  } = await fetch(timeServerUrl).then((result: any) => result.json())
   const currentTime = new Date(time)
-  if (currentTime.getHours() < 16 && currentTime.getHours() > 14) {
+  if (currentTime.getHours() < 16 && currentTime.getHours() >= 14) {
     return res.json({ message: "zzz" })
   }
-  const name = req.query.name
+  if (currentTime.getHours() < 20 && currentTime.getHours() >= 19) {
+    return res.json({ message: `Good evening ${name}` })
+  }
   res.json({ message: `Greetings ${name}!` })
 })
 

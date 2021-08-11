@@ -34,4 +34,13 @@ describe('greetings server', () => {
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('zzz')
   })
+
+  test("Should greet with good evening when server time is between 7-8pm", async () => {
+    nock.cleanAll()
+    nock(timeServerUrl).get('/').reply(200, { data: { time: new Date("2017-01-01 19:30:00") } });
+    const response = await request.get('/greeting?name=max')
+    
+    expect(response.status).toBe(200)
+    expect(response.body.message).toBe('Good evening max')
+  })
 })
