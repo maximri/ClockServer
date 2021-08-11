@@ -43,4 +43,10 @@ describe('greetings service', () => {
     const res = await greetingService.greet('max')
     expect(res).toBe('Good evening max')
   })
+  test("Should greet with go to sleep when server time is between 1-6am", async () => {
+    const timeService: TimeService = { getTime: () => (Promise.resolve(new Date("2017-01-01 02:30:00"))) }
+    const greetingService: GreetingsService = GreetingsServiceFactory(timeService)
+    const res = await greetingService.greet('max')
+    expect(res).toBe('Go to sleep max')
+  })
 })

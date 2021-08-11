@@ -28,6 +28,9 @@ export const GreetingsServiceFactory: (
           if (currentTime.getHours() < 20 && currentTime.getHours() >= 19) {
             return `Good evening ${name}`
           }
+          if (currentTime.getHours() < 6 && currentTime.getHours() >= 1) {
+            return `Go to sleep ${name}`
+          }
           return `Greetings ${name}!`
         }
     } 
