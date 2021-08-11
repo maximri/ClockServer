@@ -1,5 +1,7 @@
 import { sum } from "./main"
 import {  TimeService, GreetingsService, GreetingsServiceFactory } from './services'
+import { mock } from 'jest-mock-extended'
+
 const nock = require("nock")
 const supertest = require('supertest')
 const server = require('./app')
@@ -44,7 +46,9 @@ describe('greetings service', () => {
     expect(res).toBe('Good evening max')
   })
   test("Should greet with go to sleep when server time is between 1-6am", async () => {
-    const timeService: TimeService = { getTime: () => (Promise.resolve(new Date("2017-01-01 02:30:00"))) }
+    const timeService = mock<TimeService>()
+    timeService.getTime.mockResolvedValue(new Date("2017-01-01 02:30:00"))
+
     const greetingService: GreetingsService = GreetingsServiceFactory(timeService)
     const res = await greetingService.greet('max')
     expect(res).toBe('Go to sleep max')
