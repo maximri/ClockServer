@@ -1,4 +1,5 @@
 import { sum } from "./main"
+import {  TimeService, GreetingsService, GreetingsServiceFactory } from './services'
 const nock = require("nock")
 const supertest = require('supertest')
 const server = require('./app')
@@ -34,13 +35,12 @@ describe('greetings server', () => {
     expect(response.status).toBe(200)
     expect(response.body.message).toBe('zzz')
   })
-
+})
+describe('greetings service', () => {
   test("Should greet with good evening when server time is between 7-8pm", async () => {
-    nock.cleanAll()
-    nock(timeServerUrl).get('/').reply(200, { data: { time: new Date("2017-01-01 19:30:00") } });
-    const response = await request.get('/greeting?name=max')
-    
-    expect(response.status).toBe(200)
-    expect(response.body.message).toBe('Good evening max')
+    const timeService: TimeService = { getTime: () => (Promise.resolve(new Date("2017-01-01 19:30:00"))) }
+    const greetingService: GreetingsService = GreetingsServiceFactory(timeService)
+    const res = await greetingService.greet('max')
+    expect(res).toBe('Good evening max')
   })
 })
