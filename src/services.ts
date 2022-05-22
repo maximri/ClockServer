@@ -45,3 +45,25 @@ export const GreetingsServiceFactory: (
     return greetingService
 }
 
+export interface BrexService {
+    parseDatesFromSample: () => Promise<Array<{company: string, createdAtMillis: number, name: string}>>
+}
+
+export const DefaultBrexService = ():BrexService => {
+    return {
+        parseDatesFromSample:
+           async () => {
+            const brexData =  await axios.get('https://platform.brexapis.com/interview/test')
+                .then((result: AxiosResponse) => result.data)
+
+
+               return (brexData.data as Array<{ company: string, created_at: string, name: string }>).map((item) => {
+                   return {
+                       company: item.company,
+                       createdAtMillis: Date.parse(item.created_at),
+                       name: item.name
+                   }
+               })
+             }
+        }
+}

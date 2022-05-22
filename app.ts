@@ -1,5 +1,11 @@
 import express from 'express'
-import {GreetingsService, GreetingsServiceFactory, TimeService, TimeServiceFactory} from "./src/services"
+import {
+  DefaultBrexService,
+  GreetingsService,
+  GreetingsServiceFactory,
+  TimeService,
+  TimeServiceFactory
+} from "./src/services"
 
 // used in yarn start
 const fakeEveningTimeService: TimeService = {
@@ -16,11 +22,19 @@ app.get("/greeting", async (req: express.Request, res: express.Response) => {
   return res.json({ message })
 })
 
+app.get("/brex", async (req: express.Request, res: express.Response) => {
+  const brexService = DefaultBrexService()
+  return res.json({data: await brexService.parseDatesFromSample()})
+
+  // const message = await greetingsService.greet(req.query.name as string)
+  // return res.json({ message: 'test' })
+})
+
 app.listen(3000, () =>
     console.log('Clock server listening on port 3000!'),
 )
 
-export const server = (urlFromConfig: string) => {
+export const myServer = (urlFromConfig: string) => {
   greetingsService = GreetingsServiceFactory(TimeServiceFactory(urlFromConfig))
 
   return app
