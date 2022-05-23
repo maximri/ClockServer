@@ -1,12 +1,12 @@
 import express from "express";
 
 import {
-  DefaultBrexService,
   GreetingsService,
   GreetingsServiceFactory,
   TimeService,
   TimeServiceFactory,
 } from "./src/services";
+import { DefaultBrexService } from "./src/brexService";
 
 // used in yarn start
 const fakeEveningTimeService: TimeService = {
@@ -16,6 +16,7 @@ const fakeEveningTimeService: TimeService = {
 let greetingsService: GreetingsService = GreetingsServiceFactory(
   fakeEveningTimeService
 );
+const brexService = DefaultBrexService();
 
 const index = express();
 
@@ -26,7 +27,6 @@ index.get("/greeting", async (req: express.Request, res: express.Response) => {
 });
 
 index.get("/brex", async (req: express.Request, res: express.Response) => {
-  const brexService = DefaultBrexService();
   return res.json({ data: await brexService.parseDatesFromSample() });
 });
 
@@ -34,8 +34,8 @@ index.get("/brex", async (req: express.Request, res: express.Response) => {
 //     console.log('Clock server listening on port 3000!'),
 // )
 
-export const myServer = (urlFromConfig: string) => {
-  greetingsService = GreetingsServiceFactory(TimeServiceFactory(urlFromConfig));
+export const myServer = ({ timeServerUrl }: { timeServerUrl: string }) => {
+  greetingsService = GreetingsServiceFactory(TimeServiceFactory(timeServerUrl));
 
   return index;
 };
