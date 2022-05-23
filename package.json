@@ -2,25 +2,25 @@
   "name": "clockserver",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest",
     "lint": "eslint . --ext .ts",
-    "start": "ts-node ./app.ts"
+    "lint-and-fix": "eslint . --ext .ts --fix",
+    "start": "ts-node ./index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/supertest": "^2.0.12",
     "axios": "^0.27.2",
     "express": "^4.18.1"
   },
   "devDependencies": {
+    "@shopify/eslint-plugin": "^41.2.1",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.5.1",
     "@types/node": "^17.0.35",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
+    "@types/supertest": "^2.0.12",
     "eslint": "^8.16.0",
     "jest": "^28.1.0",
     "jest-mock-extended": "^2.0.6",
@@ -29,7 +29,6 @@
     "supertest": "^6.2.3",
     "ts-jest": "^28.0.2",
     "ts-node": "^10.8.0",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.6.4"
   },
   "jest": {

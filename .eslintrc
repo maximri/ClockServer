@@ -5,11 +5,10 @@
       "@typescript-eslint"
     ],
     "extends": [
-      "eslint:recommended",
-      "plugin:@typescript-eslint/eslint-recommended",
-      "plugin:@typescript-eslint/recommended"
+      "plugin:@shopify/typescript",
+      "plugin:@shopify/prettier",
+      "plugin:@shopify/node"
     ],
     "rules": {
-        "semi": [2, "never"]
     }
-  }
+}
