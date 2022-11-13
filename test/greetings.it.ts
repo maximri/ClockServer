@@ -1,4 +1,4 @@
-import { server } from "../app"
+import { server } from "../src/app"
 import nock from 'nock'
 import request from 'supertest'
 

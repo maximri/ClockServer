@@ -1,24 +1,7 @@
-import axios, { AxiosResponse } from 'axios'
-
-export interface TimeService {
-    getTime: () => Promise<Date>
-}
+import { TimeService } from "../adapters/timeService"
 
 export interface GreetingsService {
     greet: (name: string) => Promise<string>
-}
-
-export const TimeServiceFactory = (timeServerUrl: string): TimeService => {
-    return {
-          getTime: async () => {
-              const {
-                  data: { time },
-              } = await axios.get(timeServerUrl).then((result: AxiosResponse) => {
-                  return result.data
-              })
-              return new Date(time)
-          },
-      }
 }
 
 export const GreetingsServiceFactory: (
