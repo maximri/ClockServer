@@ -1,5 +1,5 @@
-import {GreetingsService, GreetingsServiceFactory, TimeService} from '../src/services'
-import {mock} from 'jest-mock-extended'
+import { GreetingsService, GreetingsServiceFactory, TimeService } from '../src/services'
+import { mock } from 'jest-mock-extended'
 
 describe('greetings service unit test', () => {
   // unit test example usage of fake

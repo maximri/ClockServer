@@ -3,12 +3,18 @@ import nock from 'nock'
 import request from 'supertest'
 
 const timeServerUrl = 'http://exampleURL'
-const timeServer = request(server(timeServerUrl))
+const appServer = server(timeServerUrl)
+const timeServer = request(appServer)
 
 describe('greetings server', () => {
   beforeEach (() => {
     nock(timeServerUrl).get('/').reply(200, { data: { time: new Date("2017-01-01 17:00:00") } })
   })
+  
+  afterAll(()=> {
+    appServer.close()
+  })
+
   test("Should print your name", async () => {
     const userName = 'shay'
     const response = await timeServer.get('/greeting?name=' + userName)

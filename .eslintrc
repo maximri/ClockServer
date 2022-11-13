@@ -10,6 +10,8 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "semi": [2, "never"]
+        "semi": [2, "never"],
+        "object-curly-spacing": ["error", "always"],
+        "semi-spacing": ["error", {"before": true, "after": true}]
     }
   }

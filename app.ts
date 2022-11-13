@@ -1,5 +1,5 @@
 import express from 'express'
-import {GreetingsService, GreetingsServiceFactory, TimeService, TimeServiceFactory} from "./src/services"
+import { GreetingsService, GreetingsServiceFactory, TimeService, TimeServiceFactory } from "./src/services"
 
 // used in yarn start
 const fakeEveningTimeService: TimeService = {
@@ -16,12 +16,11 @@ app.get("/greeting", async (req: express.Request, res: express.Response) => {
   return res.json({ message })
 })
 
-app.listen(3000, () =>
-    console.log('Clock server listening on port 3000!'),
-)
 
 export const server = (urlFromConfig: string) => {
   greetingsService = GreetingsServiceFactory(TimeServiceFactory(urlFromConfig))
 
-  return app
+  return app.listen(3000, () =>
+      console.log('Clock server listening on port 3000!'),
+  )
 }
