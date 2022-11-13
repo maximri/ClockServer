@@ -38,6 +38,8 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
-    ]
+    ],
+    "testRegex": ".*\\.(spec|it)\\.(ts|js)",
+    "testTimeout": 60000
   }
 }
