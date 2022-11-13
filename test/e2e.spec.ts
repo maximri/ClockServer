@@ -3,7 +3,7 @@ import nock from 'nock'
 import request from 'supertest'
 
 const timeServerUrl = 'http://exampleURL'
-const appServer = server(timeServerUrl)
+const appServer = server({ appServerPort: 3000, timeServerUrl })
 const timeServer = request(appServer)
 
 describe('greetings server', () => {

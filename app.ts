@@ -17,10 +17,11 @@ app.get("/greeting", async (req: express.Request, res: express.Response) => {
 })
 
 
-export const server = (urlFromConfig: string) => {
-  greetingsService = GreetingsServiceFactory(TimeServiceFactory(urlFromConfig))
+export const server = ({ timeServerUrl,
+                         appServerPort }: { appServerPort: number, timeServerUrl:  string }) => {
+  greetingsService = GreetingsServiceFactory(TimeServiceFactory(timeServerUrl))
 
-  return app.listen(3000, () =>
-      console.log('Clock server listening on port 3000!'),
+  return app.listen(appServerPort, () =>
+      console.log(`Server is listening on port ${appServerPort}!`),
   )
 }
