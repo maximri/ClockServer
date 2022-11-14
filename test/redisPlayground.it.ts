@@ -39,14 +39,15 @@ describe('Server should use Redis',  () => {
 
   test("and support console output when accessing /echoInTime " +
       "with a message printTime is in the past", async () => {
+    // not a big fan of using jest mock/spy capabilities in it tests, but the side effect is console.log
     const consoleSpy = jest.spyOn(console, 'log')
     const time = Date.now()
     givenHourIsAlways(new Date(time))
 
-    const message = `Hello echoInTime ${chance.name()}`
+    const message = `Hello ${chance.name()}`
     const response = await requestFor.post('/echoInTime').send({
       message,
-      time: time - 500
+      time: time - 5000
     })
 
     expect(response.status).toBe(200)
@@ -54,7 +55,6 @@ describe('Server should use Redis',  () => {
     await eventually(() => {
       expect(consoleSpy).toHaveBeenCalledWith(message)
     })
-    
   }, 5000)
 
   test("and support console output when accessing /echoInTime " +
@@ -63,10 +63,10 @@ describe('Server should use Redis',  () => {
     const time = Date.now()
     givenHourIsAlways(new Date(time))
 
-    const message = `Hello echoInTime ${chance.name()}`
+    const message = `Hello ${chance.name()}`
     const response = await requestFor.post('/echoInTime').send({
       message,
-      time: time + 5000
+      time: time + 500
     })
 
     expect(response.status).toBe(200)
@@ -81,9 +81,36 @@ describe('Server should use Redis',  () => {
     await eventually(() => {
       expect(consoleSpy).toHaveBeenCalledWith(message)
     }, { timeout: 1500 })
-
-
   }, 5000)
 
+  test("and support multiple console output when accessing /echoInTime ", async () => {
+    const consoleSpy = jest.spyOn(console, 'log')
+    const time = Date.now()
+    givenHourIsAlways(new Date(time))
+
+    const message1 = `Hello ${chance.name()}`
+    const response1 = await requestFor.post('/echoInTime').send({
+      message: message1,
+      time: time + 5000
+    })
+
+    const message2 = `Hello ${chance.name()}`
+    const response2 = await requestFor.post('/echoInTime').send({
+      message: message2,
+      time: time + 5000
+    })
+
+    expect(response1.status).toBe(200)
+    expect(response2.status).toBe(200)
+
+    clearTimeSetting()
+    givenHourIsAlways(new Date(time + 10000))
+
+    await eventually(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(message1)
+      expect(consoleSpy).toHaveBeenCalledWith(message2)
+    }, { timeout: 1500 })
+
+  }, 5000)
 })
 

@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios"
 
 export interface TimeService {
-    getTime: () => Promise<Date>
+    getDate: () => Promise<Date>
 }
 export const TimeServiceFactory = (timeServerUrl: string): TimeService => {
     return {
-        getTime: async () => {
+        getDate: async () => {
             const {
                 data: { time },
             } = await axios.get(timeServerUrl).then((result: AxiosResponse) => {

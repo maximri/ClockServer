@@ -7,14 +7,20 @@ export const EchoInTimeService = (timeService: TimeService, redis: Redis) => {
         if (redis.status !== "ready") {
             return
         }
-        const date: Date = await timeService.getTime()
-        const zrange = await redis.zrange('echoInTime', 0, date.getTime())
+        const date = await timeService.getDate()
+        
+        // min -> max is the number of elements for the sorted query not the SCORE!
+        const zrange = await redis.zrange('echoInTime',  0,100 )
+        const elementsToPrint = zrange.map((element)=> JSON.parse(element))
+            .filter((element)=> {
+                return element.time < date.getTime()})
 
-        if (zrange.length > 0) {
-            // TODO: Here impl lock
-            redis.zrem('echoInTime', zrange.at(0))
-            console.log(JSON.parse(zrange.at(0)).message)
-        }
+        elementsToPrint
+            .map((element)=> {
+                // TODO: Here impl lock
+                redis.zrem('echoInTime', JSON.stringify(element))
+                console.log(element.message)
+            })
     }, 300)
     
     return {

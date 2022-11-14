@@ -9,8 +9,8 @@ export const GreetingsServiceFactory: (
 ) => GreetingsService = (timeService: TimeService) => {
     const greetingService: GreetingsService = {
         greet: async (name: string) => {
-          const currentTime = await timeService.getTime()
-          const currentTimeHours = currentTime.getHours()
+          const currentDate = await timeService.getDate()
+          const currentTimeHours = currentDate.getHours()
 
           if (currentTimeHours < 16 && currentTimeHours >= 14) {
             return "zzz"
