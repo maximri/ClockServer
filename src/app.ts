@@ -9,14 +9,16 @@ const app = express()
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }))
 
+export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: {
+  appServerPort: number, timeServerUrl: string, redisPort?: number, redisHost?: string
+}) => {
 
-export type AppInitConfig = {
-  appServerPort: number, timeServerUrl: string, redisPort?: number, redisHost?: string }
-
-export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: AppInitConfig) => {
-
-  const redisConnection: Redis = new Redis(redisPort, redisHost)
-  
+  const redisConnection: Redis = (() => {
+    if (redisPort && redisHost) return new Redis(redisPort, redisHost)
+    else {
+      return FakeRedisWithDisconnect
+    }
+  })()
   
   const timeService = TimeServiceFactory(timeServerUrl)
   const greetingsService = GreetingsServiceFactory(timeService)
@@ -34,7 +36,20 @@ export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: A
     return res.json({ message })
   })
 
+  app.post("/tearDown",  (req: express.Request, res: express.Response) => {
+    echoInTimeService.stopPolling()
+    redisConnection.disconnect()
+    return res.json({ message: 'tearDown done' })
+  })
+
   return app.listen(appServerPort, () =>
       console.log(`Server is listening on port ${appServerPort}!`),
   )
 }
+
+// this hack is for tests that don't use redis and cause open handlers
+const FakeRedisWithDisconnect = ({
+  disconnect: () => {
+    return
+  }
+}) as Redis

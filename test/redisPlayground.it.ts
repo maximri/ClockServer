@@ -1,36 +1,40 @@
-import { AppInitConfig, server } from "../src/app"
+import { server } from "../src/app"
 import request from 'supertest'
 import { RedisMemoryServer } from 'redis-memory-server'
-import nock from "nock"
 import eventually from "wix-eventually"
-
-const timeServerUrl = 'http://exampleURL'
+import { TimeServerDriver } from "./timeServerDriver"
 
 describe('Server should use Redis',  () => {
   let redisServer: RedisMemoryServer
 
-  const appInitConfig: AppInitConfig = {
-    appServerPort: 3000, timeServerUrl, redisPort: 3010, redisHost: '127.0.0.1' }
+  const timeServerUrl = 'http://exampleURL'
+  const redisPort = 3010
+  const redisHost = '127.0.0.1'
+  const appServerPort = 3000
 
-  const appServer = server(appInitConfig)
+  const appServer = server({ appServerPort, timeServerUrl, redisPort, redisHost })
   const requestFor = request(appServer)
 
+  const { givenHourIsAlways } = TimeServerDriver(timeServerUrl)
+  
   beforeAll(async () => {
-    redisServer = new RedisMemoryServer({ instance: { port: 3010 } })
+    redisServer = new RedisMemoryServer({ instance: { port: redisPort } })
     await redisServer.start()
   })
 
   afterAll(async () => {
-    appServer.close()
+    await requestFor.post('/tearDown')
     if (redisServer) {
       await redisServer.stop()
     }
+    await appServer.close()
   })
 
-  test("and support console output when accessing /echoInTime", async () => {
+  test("and support console output when accessing /echoInTime " +
+      "with a message printTime is in the past", async () => {
     const consoleSpy = jest.spyOn(console, 'log')
     const time = Date.now()
-    nock(timeServerUrl).get('/').reply(200, { data: { time: new Date(time) } }).persist()
+    givenHourIsAlways(new Date(time))
 
     const message = "Hello echoInTime +123"
     const response = await requestFor.post('/echoInTime').send({

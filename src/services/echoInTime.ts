@@ -16,11 +16,14 @@ export const EchoInTimeService = (timeService: TimeService, redis: Redis) => {
             console.log(JSON.parse(zrange.at(0)).message)
         }
     }, 1000)
-
+    
     return {
         addToPrintQueue: ({ message, time }: { message: string, time: number }) => {
             const zadd = redis.zadd('echoInTime', "NX", time, JSON.stringify({ message, time }))
             return zadd
+        },
+        stopPolling() {
+            clearInterval(interval)
         }
     }
 }
