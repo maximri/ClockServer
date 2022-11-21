@@ -62,7 +62,7 @@ describe('AcmeService should', () => {
         await acmeService.processSingleLog(incomingLog)
 
         const internalIPs = acmeService.getInternalIPs()
-        expect(internalIPs).toEqual(expect.arrayContaining([incomingInternalIp, incomingInternalIp]))
+        expect(internalIPs).toEqual(expect.arrayContaining([outgoingInternalIp, incomingInternalIp]))
     })
 
     test("allow processing of multiple firewall log file and return DISTINCT internal IPs list ",  async () => {
@@ -80,7 +80,7 @@ describe('AcmeService should', () => {
         await acmeService.processSingleLog(incomingLog)
 
         const internalIPs = acmeService.getInternalIPs()
-        expect(internalIPs).toEqual(expect.arrayContaining([internalIp]))
+        expect(internalIPs).toEqual([internalIp])
     })
 
     test("only process log of cloud service of interest", async () => {
@@ -155,5 +155,14 @@ describe('AcmeService should', () => {
         await acmeService.processSingleLog(sameLogWithoutDomainSection)
 
         expect(dnsResolver.resolve).toHaveBeenCalledTimes(0)
+    })
+
+    test.skip('should support reading bunch of logs from filesystem', async () => {
+        await acmeService.loadBunchOfCloudServices()
+        await acmeService.loadBunchOfLogs()
+        const internalIPs1 = acmeService.getInternalIPs()
+        console.log('0-000000')
+        console.log(internalIPs1)
+
     })
 })
