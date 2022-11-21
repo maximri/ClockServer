@@ -25,7 +25,7 @@ describe('Acme Server should', () => {
             'Country of origin': 'US',
             'GDPR Compliant': 'Yes'
         })
-        expect(responseOfAddNewCloudService).toBe(200)
+        expect(responseOfAddNewCloudService.status).toBe(200)
 
         const responseOfProcessSingleLog = await requestFor.post('/processSingleLog').send({
             log,

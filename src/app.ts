@@ -23,9 +23,7 @@ export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: {
   
   const timeService = TimeServiceFactory(timeServerUrl ? timeServerUrl : 'http://exampleURL')
   const greetingsService = GreetingsServiceFactory(timeService)
-
   const echoInTimeService = EchoInTimeService(timeService, redisConnection)
-
   const acmeService = AcmeServiceFactory()
   
   app.get("/greeting", async (req: express.Request, res: express.Response) => {
@@ -39,15 +37,19 @@ export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: {
     return res.json({ message })
   })
 
-  app.post("/processSingleLog", (req: express.Request, res: express.Response) => {
-    const message = acmeService.processSingleLog(req.body.log)
+  app.post("/processSingleLog", async (req: express.Request, res: express.Response) => {
+    const message = await acmeService.processSingleLog(req.body.log)
     return res.json({ message })
+  })
+
+  app.post("/newCloudService", (req: express.Request, res: express.Response) => {
+    acmeService.addCloudService(req.body)
+    return res.json({ message: 'done' })
   })
 
   app.get("/getInternalIPs", (req: express.Request, res: express.Response) => {
     return res.json({ message: JSON.stringify(acmeService.getInternalIPs()) })
   })
-
 
   app.post("/tearDown",  (req: express.Request, res: express.Response) => {
     echoInTimeService.stopPolling()
