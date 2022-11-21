@@ -120,4 +120,40 @@ describe('AcmeService should', () => {
         const internalIPs = acmeService.getInternalIPs()
         expect(internalIPs).toEqual([internalIp])
     })
+
+    test("not go to network for log requests without domains " +
+        "that their domain address was already resolved",  async () => {
+        const internalIp = '11.11.11.83'
+        const domainIp = '192.150.249.87'
+        const log = 'Feb  1 00:00:02 bridge kernel: INBOUND TCP: IN=br0 PHYSIN=eth0 OUT=br0 PHYSOUT=eth1 ' +
+            'SRC=' + domainIp + ' DST=' + internalIp + ' LEN=40 TOS=0x00 PREC=0x00 TTL=110 ' +
+            'ID=12973 PROTO=TCP ' +
+            'SPT=220 DPT=6129 WINDOW=16384 RES=0x00 SYN URGP=0'
+
+        dnsResolver.resolve.calledWith(domainIp).mockResolvedValue('www.dropbox.com')
+
+        await acmeService.processSingleLog(log)
+        const internalIPs = acmeService.getInternalIPs()
+        expect(internalIPs).toEqual([internalIp])
+
+        await acmeService.processSingleLog(log)
+        expect(dnsResolver.resolve).toHaveBeenCalledTimes(1)
+    })
+
+    test("not go to network for log requests without domains " +
+        "that their domain address was registered by a previous request resolved",  async () => {
+        const internalIp = '11.11.11.83'
+        const domainIp = '192.150.249.87'
+        const log = 'Feb  1 00:00:02 bridge kernel: INBOUND TCP: IN=br0 PHYSIN=eth0 OUT=br0 PHYSOUT=eth1 ' +
+            'SRC=' + domainIp + ' DST=' + internalIp + ' LEN=40 TOS=0x00 PREC=0x00 TTL=110 ' +
+            'ID=12973 PROTO=TCP ' +
+            'SPT=220 DPT=6129 WINDOW=16384 RES=0x00 SYN URGP=0 DOMAIN=www.dropbox.com'
+
+        await acmeService.processSingleLog(log)
+
+        const sameLogWithoutDomainSection = log.slice(0, log.lastIndexOf('DOMAIN'))
+        await acmeService.processSingleLog(sameLogWithoutDomainSection)
+
+        expect(dnsResolver.resolve).toHaveBeenCalledTimes(0)
+    })
 })

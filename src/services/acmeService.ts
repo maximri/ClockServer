@@ -41,10 +41,29 @@ export const AcmeServiceFactory = (dnsResolver: DnsResolver = NativeNodeJsDnsRes
 
     const ipSet = new Collections.Set<string>()
     const cloudServices = new Collections.Set<CloudService>()
+    const ipToDomain = new Map<string,string>()
 
     async function findDomain(ip: string) {
+        if (ipToDomain.has(ip)) {
+           return ipToDomain.get(ip)
+        }
+
         const maybeDns = await dnsResolver.resolve(ip)
-        return maybeDns ? maybeDns : 'www.justToContinueTheFlow.com'
+        if (maybeDns) {
+            ipToDomain.set(ip, maybeDns)
+            return maybeDns
+        }
+
+        return 'www.justToContinueTheFlow.com'
+    }
+
+    async function getDomain(maybeDomain: Array<string> | undefined, isIncoming: boolean, domainIp: string) {
+        if (maybeDomain) {
+            ipToDomain.set(domainIp, maybeDomain[1])
+            return maybeDomain[1]
+        }
+
+        return (maybeDomain) ? maybeDomain[1] : await findDomain(domainIp)
     }
 
     return {
@@ -64,7 +83,7 @@ export const AcmeServiceFactory = (dnsResolver: DnsResolver = NativeNodeJsDnsRes
             const srcIp = tokensTuples.find((tuple) => tuple[0] === 'SRC')[1]
             const destIp = tokensTuples.find((tuple) => tuple[0] === 'DST')[1]
             const maybeDomain = tokensTuples.find((tuple) => tuple[0] === 'DOMAIN')
-            const domain = (maybeDomain) ? maybeDomain[1] : await findDomain(isIncoming ? srcIp : destIp)
+            const domain = await getDomain(maybeDomain, isIncoming, isIncoming ? srcIp : destIp)
 
             const isRelevantCloudService =
                 cloudServices.toArray().find((cloudService: CloudService) => cloudService["Service domain"] === domain)
