@@ -40,7 +40,7 @@ export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: {
   })
 
   app.post("/processSingleLog", (req: express.Request, res: express.Response) => {
-    const message = acmeService.processSingleLog(req.body)
+    const message = acmeService.processSingleLog(req.body.log)
     return res.json({ message })
   })
 
