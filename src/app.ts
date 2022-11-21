@@ -4,7 +4,7 @@ import { GreetingsServiceFactory } from "./services/greetingsService"
 import bodyParser from "body-parser"
 import Redis from 'ioredis'
 import { EchoInTimeService } from "./services/echoInTime"
-import { AcmeService } from "./services/acmeService"
+import { AcmeServiceFactory } from "./services/acmeService"
 
 const app = express()
 app.use(bodyParser.json())
@@ -26,7 +26,7 @@ export const server = ({ timeServerUrl, appServerPort, redisPort, redisHost }: {
 
   const echoInTimeService = EchoInTimeService(timeService, redisConnection)
 
-  const acmeService = AcmeService()
+  const acmeService = AcmeServiceFactory()
   
   app.get("/greeting", async (req: express.Request, res: express.Response) => {
     const message = await greetingsService.greet(req.query.name as string)
