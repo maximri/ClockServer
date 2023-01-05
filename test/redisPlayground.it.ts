@@ -1,13 +1,13 @@
 import { Chance } from 'chance'
-import { server } from "../src/app"
+import { server } from '../src/app'
 import request from 'supertest'
 import { RedisMemoryServer } from 'redis-memory-server'
-import eventually from "wix-eventually"
-import { TimeServerDriver } from "./timeServerDriver"
+import eventually from 'wix-eventually'
+import { TimeServerDriver } from './timeServerDriver'
 
 const chance = new Chance()
 
-describe('Server should use Redis',  () => {
+describe('Server should use Redis', () => {
   let redisServer: RedisMemoryServer
 
   const timeServerUrl = 'http://exampleURL'
@@ -19,12 +19,12 @@ describe('Server should use Redis',  () => {
   const requestFor = request(appServer)
 
   const { givenHourIsAlways, clearTimeSetting } = TimeServerDriver(timeServerUrl)
-  
+
   beforeAll(async () => {
     redisServer = new RedisMemoryServer({ instance: { port: redisPort } })
     await redisServer.start()
   })
-  
+
   beforeEach(() => {
     clearTimeSetting()
   })
@@ -37,8 +37,8 @@ describe('Server should use Redis',  () => {
     await appServer.close()
   })
 
-  test("and support console output when accessing /echoInTime " +
-      "with a message printTime is in the past", async () => {
+  test('and support console output when accessing /echoInTime ' +
+      'with a message printTime is in the past', async () => {
     // not a big fan of using jest mock/spy capabilities in it tests, but the side effect is console.log
     const consoleSpy = jest.spyOn(console, 'log')
     const time = Date.now()
@@ -57,8 +57,8 @@ describe('Server should use Redis',  () => {
     })
   }, 5000)
 
-  test("and support console output when accessing /echoInTime " +
-      "with a message printTime is in the future", async () => {
+  test('and support console output when accessing /echoInTime ' +
+      'with a message printTime is in the future', async () => {
     const consoleSpy = jest.spyOn(console, 'log')
     const time = Date.now()
     givenHourIsAlways(new Date(time))
@@ -83,7 +83,7 @@ describe('Server should use Redis',  () => {
     }, { timeout: 1500 })
   }, 5000)
 
-  test("and support multiple console output when accessing /echoInTime ", async () => {
+  test('and support multiple console output when accessing /echoInTime ', async () => {
     const consoleSpy = jest.spyOn(console, 'log')
     const time = Date.now()
     givenHourIsAlways(new Date(time))

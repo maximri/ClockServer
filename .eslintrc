@@ -5,14 +5,16 @@
       "@typescript-eslint"
     ],
     "extends": [
+      "wix",
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "semi": [2, "never"],
-        "object-curly-spacing": ["error", "always"],
-        "max-len": ["error", { "code": 110 }],
-        "semi-spacing": ["error", {"before": true, "after": true}]
+      "new-cap": ["error", { "capIsNew": false }],
+      "semi": [2, "never"],
+      "object-curly-spacing": ["error", "always"],
+      "max-len": ["error", { "code": 120 }],
+      "semi-spacing": ["error", {"before": true, "after": true}]
     }
   }
