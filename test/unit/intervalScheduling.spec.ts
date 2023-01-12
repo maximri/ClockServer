@@ -16,9 +16,8 @@ const DynamicProgramingIntervalSchedulingResolver = ():IntervalSchedulingResolve
       while (sortedByFinishTime.length > 0) {
         const earliestClassFinished = sortedByFinishTime[0]
         classesPicked.push(earliestClassFinished)
-        sortedByFinishTime = sortedByFinishTime.filter(({ startTime }) => {
-          return earliestClassFinished.finishTime <= startTime
-        })
+        sortedByFinishTime = sortedByFinishTime.filter(({ startTime }) =>
+          earliestClassFinished.finishTime <= startTime)
       }
       return classesPicked.length
     }
