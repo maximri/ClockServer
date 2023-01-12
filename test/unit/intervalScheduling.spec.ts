@@ -62,8 +62,7 @@ describe('Interval scheduling problem should be solved', () => {
     { intervalSchedulingResolver: BruteForceExponentialIntervalSchedulingResolver(), technique: 'BruteForce' },
     { intervalSchedulingResolver: DynamicProgramingIntervalSchedulingResolver(), technique: 'DynamicPrograming' }]
 
-  // eslint-disable-next-line no-template-curly-in-string
-  describe.each(resolvers)('using the technique: $technique for', ({ intervalSchedulingResolver, technique }) => {
+  describe.each(resolvers)('using the technique: $technique for', ({ intervalSchedulingResolver }) => {
     test('an example without overlapping intervals', () => {
       expect(intervalSchedulingResolver.maxIntervals({
         startTimes: [1, 5, 7],
