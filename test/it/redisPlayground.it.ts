@@ -1,9 +1,9 @@
 import { Chance } from 'chance'
-import { server } from '../src/app'
+import { server } from '../../src/app'
 import request from 'supertest'
 import { RedisMemoryServer } from 'redis-memory-server'
 import eventually from 'wix-eventually'
-import { TimeServerDriver } from './timeServerDriver'
+import { TimeServerDriver } from '../utils/timeServerDriver'
 
 const chance = new Chance()
 

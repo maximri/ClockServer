@@ -1,6 +1,6 @@
-import { server } from '../src/app'
+import { server } from '../../src/app'
 import request from 'supertest'
-import { TimeServerDriver } from './timeServerDriver'
+import { TimeServerDriver } from '../utils/timeServerDriver'
 
 describe('Clock Server when accessing /greeting', () => {
   const timeServerUrl = 'http://exampleURL'
